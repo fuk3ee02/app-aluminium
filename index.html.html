@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Kusen & Pintu Aluminium</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d0f12;--panel:#13171e;--panel2:#1a1f2a;--border:#2a3040;
+    --accent:#f5a623;--accent2:#e8891a;--blue:#4a9eff;--green:#3ddc84;
+    --purple:#b06aff;--red:#ff4d4d;--text:#dce4f0;--muted:#7a8799;
+    --mono:'Share Tech Mono',monospace;--head:'Rajdhani',sans-serif;--body:'Barlow',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;padding:24px;}
+
+  .header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);position:relative;}
+  .header::after{content:'';position:absolute;bottom:-1px;left:0;width:240px;height:2px;background:var(--accent);}
+  .logo-box{width:50px;height:50px;background:var(--accent);display:flex;align-items:center;justify-content:center;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);}
+  .logo-box svg{width:26px;height:26px;}
+  .header-text h1{font-family:var(--head);font-size:24px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;}
+  .header-text p{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+  .vtag{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid var(--accent);padding:3px 8px;}
+
+  .top-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  @media(max-width:800px){.top-row,.layout{grid-template-columns:1fr!important;}}
+
+  .tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid var(--border);}
+  .tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:10px 18px;font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:-1px;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tbadge{display:inline-block;background:var(--panel2);border:1px solid var(--border);font-size:10px;padding:1px 5px;margin-left:5px;font-family:var(--mono);vertical-align:middle;}
+  .tab-btn.active .tbadge{background:rgba(245,166,35,.15);border-color:var(--accent);color:var(--accent);}
+  .tab-pane{display:none;}
+  .tab-pane.active{display:block;}
+
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+  .panel{background:var(--panel);border:1px solid var(--border);padding:18px;position:relative;}
+  .panel::before{content:'';position:absolute;top:0;left:0;width:36px;height:2px;background:var(--accent);}
+  .panel.pb::before{background:var(--blue);}
+  .panel.pp::before{background:var(--purple);}
+  .ptitle{font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .ptitle.b{color:var(--blue);}
+  .ptitle.p{color:var(--purple);}
+  .pdot{width:5px;height:5px;background:currentColor;border-radius:50%;flex-shrink:0;}
+
+  .info-box{border-left:3px solid var(--accent);padding:9px 12px;margin-bottom:12px;font-size:11px;line-height:1.9;color:var(--muted);background:rgba(245,166,35,.04);}
+  .info-box.b{border-color:var(--blue);background:rgba(74,158,255,.04);}
+  .info-box span{color:var(--text);font-family:var(--mono);}
+
+  .fl{font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
+  .fg{margin-bottom:12px;}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  input[type=number],input[type=text],select,textarea{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;}
+  input[type=number]:focus,input[type=text]:focus,select:focus,textarea:focus{border-color:var(--accent);}
+  input[type=number]{-moz-appearance:textfield;}
+  input[type=number]::-webkit-inner-spin-button{display:none;}
+  select option{background:var(--panel2);}
+  .ul{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;display:block;}
+  .hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+
+  .ch{display:grid;gap:6px;margin-bottom:4px;}
+  .ch span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .ch-k{grid-template-columns:2fr 1fr 1fr 1fr 24px;}
+  .ir{display:grid;gap:6px;align-items:center;margin-bottom:6px;}
+  .ir-k{grid-template-columns:2fr 1fr 1fr 1fr 24px;}
+  .ir-h{grid-template-columns:2.5fr 1fr 1.4fr 24px;}
+  .ch-h{grid-template-columns:2.5fr 1fr 1.4fr 24px;}
+  .ir input,.ir select{font-size:11px;padding:6px 8px;}
+
+  .bdel{background:transparent;border:1px solid #3a3040;color:var(--red);width:24px;height:24px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+  .bdel:hover{background:rgba(255,77,77,.15);border-color:var(--red);}
+  .badd{background:transparent;border:1px dashed var(--border);color:var(--muted);padding:7px;width:100%;cursor:pointer;font-family:var(--body);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s;}
+  .badd:hover{border-color:var(--accent);color:var(--accent);}
+  .badd.b:hover{border-color:var(--blue);color:var(--blue);}
+
+  .bcalc{width:100%;background:var(--accent);color:#000;border:none;padding:13px;font-family:var(--head);font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);transition:background .2s;}
+  .bcalc:hover{background:var(--accent2);}
+  .breset{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);padding:9px;font-family:var(--body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:8px;}
+  .breset:hover{border-color:var(--muted);color:var(--text);}
+
+  /* ---- RESULT ---- */
+  .rp{background:var(--panel);border:1px solid var(--border);padding:20px;margin-top:16px;position:relative;display:none;}
+  .rp.vis{display:block;}
+  .rp::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue),var(--purple),transparent);}
+
+  /* COMPARISON CARDS - dua kolom besar */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+  @media(max-width:700px){.compare-grid{grid-template-columns:1fr;}}
+  .cmp-card{border:1px solid var(--border);padding:16px;position:relative;}
+  .cmp-card.aman{border-color:var(--accent);background:rgba(245,166,35,.04);}
+  .cmp-card.opti{border-color:var(--blue);background:rgba(74,158,255,.04);}
+  .cmp-header{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+  .cmp-card.aman .cmp-header{color:var(--accent);}
+  .cmp-card.opti .cmp-header{color:var(--blue);}
+  .cmp-desc{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+  .cmp-stat{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(42,48,64,.5);}
+  .cmp-stat:last-child{border-bottom:none;}
+  .cmp-sn{font-size:11px;color:var(--muted);}
+  .cmp-sv{font-family:var(--mono);font-size:14px;}
+  .cmp-card.aman .cmp-sv{color:var(--accent);}
+  .cmp-card.opti .cmp-sv{color:var(--blue);}
+  .cmp-main{font-family:var(--mono);font-size:32px;font-weight:bold;margin:10px 0 4px;}
+  .cmp-card.aman .cmp-main{color:var(--accent);}
+  .cmp-card.opti .cmp-main{color:var(--blue);}
+  .cmp-sub{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .badge-recommend{position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;font-family:var(--head);}
+  .badge-safe{background:rgba(245,166,35,.15);border:1px solid var(--accent);color:var(--accent);}
+  .badge-eff{background:rgba(74,158,255,.15);border:1px solid var(--blue);color:var(--blue);}
+
+  .rcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:18px;}
+  .rc{background:var(--panel2);border:1px solid var(--border);padding:13px;position:relative;overflow:hidden;}
+  .rc::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s ease;}
+  .rc.cb::after{background:var(--blue);}
+  .rc.cg::after{background:var(--green);}
+  .rc.cp::after{background:var(--purple);}
+  .rc.go::after{transform:scaleX(1);}
+  .rl{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .rv{font-family:var(--mono);font-size:18px;color:var(--accent);font-weight:bold;word-break:break-all;}
+  .rv.b{color:var(--blue);}
+  .rv.g{color:var(--green);}
+  .rv.p{color:var(--purple);}
+  .ru{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+
+  .rsect{margin-top:18px;}
+  .rsttl{font-family:var(--head);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+
+  /* cutting plan visual */
+  .cutting-plan{margin-top:10px;}
+  table.dt{width:100%;border-collapse:collapse;font-size:11px;}
+  table.dt th{background:var(--panel2);text-align:left;padding:7px 9px;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);font-family:var(--body);font-weight:500;white-space:nowrap;}
+  table.dt td{padding:7px 9px;border-bottom:1px solid rgba(42,48,64,.4);font-family:var(--mono);color:var(--text);}
+  table.dt tr:hover td{background:rgba(245,166,35,.03);}
+  .ta{color:var(--accent);text-align:right;}
+  .tb{color:var(--blue);text-align:right;}
+  .tg{color:var(--green);font-weight:bold;text-align:right;}
+  .tp{color:var(--purple);text-align:right;}
+
+  .komp-box{background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:10px 14px;margin-top:10px;font-family:var(--mono);font-size:11px;}
+  .komp-box.b{border-left-color:var(--blue);}
+  .komp-title{font-family:var(--head);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+  .komp-box.b .komp-title{color:var(--blue);}
+  .komp-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(42,48,64,.3);}
+  .komp-row:last-child{border-bottom:none;}
+  .kl{color:var(--muted);}
+  .kv{color:var(--text);}
+  .kt{font-weight:bold;}
+
+  .wbw{margin-top:10px;}
+  .wbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px;font-family:var(--mono);}
+  .wbt{height:5px;background:var(--panel2);border:1px solid var(--border);overflow:hidden;}
+  .wbf{height:100%;background:var(--accent);transition:width .7s ease;}
+  .wbf.b{background:var(--blue);}
+
+  .cbl{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(42,48,64,.4);font-family:var(--mono);font-size:11px;}
+  .cbl:last-child{border-bottom:none;}
+  .cbn{color:var(--muted);}
+  .cbv{color:var(--text);}
+
+  .gttl{background:var(--panel2);border:1px solid var(--accent);padding:14px 18px;margin-top:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;}
+  .gtlb{font-family:var(--head);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);}
+  .gtsb{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .gtv{font-family:var(--mono);font-size:24px;color:#fff;text-align:right;}
+
+  .bprint{background:transparent;border:1px solid var(--green);color:var(--green);padding:9px 16px;font-family:var(--body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:14px;}
+  .bprint:hover{background:rgba(61,220,132,.1);}
+
+  /* ITEM CARD */
+  .item-card{background:var(--panel2);border:1px solid var(--border);margin-bottom:10px;transition:border-color .2s;}
+  .item-card:hover{border-color:rgba(245,166,35,.35);}
+  .item-card-head{display:grid;grid-template-columns:2fr 90px 90px 60px auto auto;gap:8px;align-items:center;padding:10px 12px;}
+  .item-card-head input{font-size:11px;padding:6px 8px;}
+  .icard-komponen{padding:0 12px 10px;border-top:1px solid var(--border);}
+  .icard-komp-title{font-family:var(--head);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);padding:8px 0 6px;display:flex;align-items:center;justify-content:space-between;}
+  .komp-rows{display:flex;flex-direction:column;gap:4px;}
+  .komp-item-row{display:grid;grid-template-columns:120px 1fr 90px auto;gap:6px;align-items:center;}
+  .komp-item-row select,.komp-item-row input{font-size:11px;padding:5px 8px;}
+  .komp-tag{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 6px;margin-right:3px;}
+  .tag-T{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid rgba(245,166,35,.3);}
+  .tag-A{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3);}
+  .tag-C{background:rgba(176,106,255,.15);color:var(--purple);border:1px solid rgba(176,106,255,.3);}
+  .btn-toggle-komp{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:10px;padding:4px 9px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+  .btn-toggle-komp:hover,.btn-toggle-komp.open{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.07);}
+  .badd-komp{background:transparent;border:1px dashed rgba(245,166,35,.25);color:rgba(245,166,35,.5);padding:5px 10px;width:100%;cursor:pointer;font-family:var(--body);font-size:10px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;margin-top:6px;}
+  .badd-komp:hover{border-color:var(--accent);color:var(--accent);}
+  .komp-summary-wrap{display:flex;flex-wrap:wrap;gap:4px;padding:4px 12px 8px;}
+
+  /* PRESET GRID */
+  .preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .preset-card{background:var(--panel2);border:1px solid var(--border);padding:10px 12px;cursor:pointer;transition:all .15s;}
+  .preset-card:hover{border-color:var(--accent);background:rgba(245,166,35,.04);}
+  .preset-card-name{font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:1px;color:var(--text);margin-bottom:3px;}
+  .preset-card-desc{font-size:10px;color:var(--muted);line-height:1.6;font-family:var(--mono);}
+  .preset-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;}
+
+  @media print{
+    body{background:#fff;color:#000;padding:0;}
+    .tabs,.bcalc,.breset,.badd,.bdel,.bprint{display:none!important;}
+    .tab-pane{display:block!important;}
+    .panel,.rp{border:1px solid #ccc;background:#fff;}
+    .rc{background:#f5f5f5;border:1px solid #ddd;}
+    :root{--text:#000;--muted:#666;--accent:#b8860b;--blue:#1a5cb3;--green:#1a8050;--purple:#6a2faa;--panel2:#f0f0f0;--panel:#fff;--bg:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="square">
+      <rect x="2" y="3" width="20" height="18"/>
+      <line x1="2" y1="8" x2="22" y2="8"/>
+      <line x1="9" y1="3" x2="9" y2="21"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <h1>Kalkulator Kusen &amp; Pintu Aluminium</h1>
+    <p>Metode Per-Unit (Aman) vs Optimasi Cutting — v3.2</p>
+  </div>
+  <div class="vtag">v3.2</div>
+</div>
+
+<!-- TOP ROW -->
+<div class="top-row">
+  <div class="panel" style="padding:14px 18px;">
+    <div class="ptitle"><span class="pdot"></span>Data Proyek</div>
+    <div class="frow">
+      <div class="fg" style="margin-bottom:0"><label class="fl">Nama Proyek / Lokasi</label><input type="text" id="projectName" placeholder="Contoh: Rumah Pak Budi"></div>
+      <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal</label><input type="text" id="projectDate"></div>
+    </div>
+  </div>
+  <div class="panel" style="padding:14px 18px;">
+    <div class="ptitle"><span class="pdot"></span>Parameter Umum</div>
+    <div class="frow">
+      <div><label class="fl">Panjang Batang (m)</label><input type="number" id="barLength" value="6" min="1" step="0.1" onchange="updateProfileInfo()"></div>
+      <div><label class="fl">Kerf / Potongan (mm)</label><input type="number" id="kerf" value="3" min="0" step="1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('kusen',this)">⬜ Item Kusen &amp; Daun Pintu <span class="tbadge" id="bk">0</span></button>
+  <button class="tab-btn" onclick="switchTab('hardware',this)">🔩 Hardware <span class="tbadge" id="bh">0</span></button>
+  <button class="tab-btn" onclick="switchTab('config',this)">⚙ Biaya</button>
+</div>
+
+<!-- TAB KUSEN -->
+<!-- TAB ITEM (KUSEN + DAUN PINTU UNIFIED) -->
+<div class="tab-pane active" id="tab-kusen">
+  <div class="layout">
+    <div class="panel" style="grid-column:1/-1">
+      <div class="ptitle"><span class="pdot"></span>Daftar Item Opening</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7;">
+        Input <strong style="color:var(--accent)">ukuran opening / lubang dinding</strong> satu kali.
+        Aktifkan toggle <strong style="color:var(--blue)">🚪 Ada Daun Pintu</strong> jika butuh daun pintu — ukuran potong dihitung otomatis.
+      </p>
+      <div id="itemList"></div>
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+        <button class="badd" onclick="addItem('pintu_single')">+ Pintu</button>
+        <button class="badd" style="border-color:var(--blue);color:var(--blue);" onclick="addItem('jendela')">+ Jendela</button>
+        <button class="badd" style="border-color:var(--purple);color:var(--purple);" onclick="addItem('jendela_sliding')">+ Sliding</button>
+        <button class="badd" style="border-color:var(--muted);color:var(--muted);" onclick="addItem('custom')">+ Custom</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle"><span class="pdot"></span>Profil Kusen</div>
+      <div class="fg">
+        <label class="fl">Jenis Profil</label>
+        <select id="profileType" onchange="updateProfileInfo()">
+          <option value="40x40">Profil 40×40 mm</option>
+          <option value="50x50">Profil 50×50 mm</option>
+          <option value="60x40" selected>Profil 60×40 mm</option>
+          <option value="100x50">Profil 100×50 mm</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div id="customProfile" style="display:none">
+        <div class="frow">
+          <div><label class="fl">Lebar (mm)</label><input type="number" id="profW" value="60" min="10" oninput="updateProfileInfo()"></div>
+          <div><label class="fl">Tinggi (mm)</label><input type="number" id="profH" value="40" min="10"></div>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Waste Factor (%)</label>
+        <input type="number" id="wastePct" value="0" min="0" max="30">
+        <span class="ul">cadangan di atas perhitungan per unit</span>
+      </div>
+      <div class="hr"></div>
+      <div id="profileInfo" style="font-family:var(--mono);font-size:11px;line-height:2.1;color:var(--muted);"></div>
+    </div>
+    <div class="panel pb">
+      <div class="ptitle b"><span class="pdot"></span>Profil &amp; Toleransi Daun Pintu</div>
+
+      <!-- Kusen profil width (read-only info, diambil dari profil kusen) -->
+      <div class="info-box b" style="margin-bottom:12px;font-size:11px;line-height:2;">
+        Formula cutting daun pintu:<br>
+        <span>Tiang</span> = Tinggi opening − profil kusen atas − celah atas − celah bawah<br>
+        <span>Ambang</span> = Lebar opening − profil kusen kiri − profil kusen kanan − celah kiri − celah kanan
+      </div>
+
+      <div class="ptitle b" style="font-size:11px;margin-bottom:8px;"><span class="pdot"></span>Toleransi / Celah (mm)</div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Celah Atas (mm)</label>
+          <input type="number" id="gapAtas" value="3" min="0" step="1" oninput="renderItems()">
+          <span class="ul">standar: 3mm</span>
+        </div>
+        <div class="fg">
+          <label class="fl">Celah Bawah (mm)</label>
+          <input type="number" id="gapBawah" value="5" min="0" step="1" oninput="renderItems()">
+          <span class="ul">standar: 5–8mm</span>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Celah Kiri (mm)</label>
+          <input type="number" id="gapKiri" value="3" min="0" step="1" oninput="renderItems()">
+          <span class="ul">standar: 3mm</span>
+        </div>
+        <div class="fg">
+          <label class="fl">Celah Kanan (mm)</label>
+          <input type="number" id="gapKanan" value="3" min="0" step="1" oninput="renderItems()">
+          <span class="ul">standar: 3mm</span>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="ptitle b" style="font-size:11px;margin-bottom:8px;"><span class="pdot"></span>Profil Tiang Daun Pintu</div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Harga Profil Tiang (/btg)</label>
+          <input type="number" id="pintuBarPrice" value="125000" step="5000">
+        </div>
+        <div class="fg">
+          <label class="fl">Profil tiang = profil kusen?</label>
+          <select id="pintuSamaProfil">
+            <option value="yes">Ya — sama</option>
+            <option value="no">Tidak — berbeda</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="ptitle b" style="font-size:11px;margin-bottom:8px;"><span class="pdot"></span>Profil Ambang Daun Pintu <span style="font-size:9px;color:var(--muted);font-family:var(--mono);font-weight:400;">(komponen berbeda)</span></div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Harga Profil Ambang (/btg)</label>
+          <input type="number" id="ambangBarPrice" value="110000" step="5000">
+        </div>
+        <div class="fg">
+          <label class="fl">Panjang Batang Ambang (m)</label>
+          <input type="number" id="ambangBarLength" value="6" min="1" step="0.5">
+          <span class="ul">default sama dengan batang kusen</span>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="ptitle b" style="margin-bottom:10px;"><span class="pdot"></span>Konfigurasi Kaca</div>
+      <div class="fg">
+        <label class="fl">Jenis Kaca</label>
+        <select id="kacaType">
+          <option value="polos_5">Kaca Polos 5mm</option>
+          <option value="polos_8">Kaca Polos 8mm</option>
+          <option value="tempered_8" selected>Kaca Tempered 8mm</option>
+          <option value="tempered_12">Kaca Tempered 12mm</option>
+          <option value="frosted">Kaca Buram / Frosted</option>
+        </select>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Overlap Kaca ke Frame (mm/sisi)</label><input type="number" id="kacaOverlap" value="15" min="0" step="5"></div>
+        <div class="fg"><label class="fl">Waste Kaca (%)</label><input type="number" id="kacaWaste" value="5" min="0" max="30"></div>
+      </div>
+      <div class="fg"><label class="fl">Harga Kaca (/m²)</label><input type="number" id="kacaPrice" value="350000" step="10000"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB HARDWARE -->
+<div class="tab-pane" id="tab-hardware">
+  <div class="layout">
+    <div class="panel pp">
+      <div class="ptitle p"><span class="pdot"></span>Hardware &amp; Aksesoris</div>
+      <div class="ch ch-h"><span>Nama Hardware</span><span>Qty (pcs)</span><span>Harga/pcs (Rp)</span><span></span></div>
+      <div id="hwList"></div>
+      <button class="badd" onclick="addHardware()">+ Tambah Hardware</button>
+    </div>
+    <div class="panel pp">
+      <div class="ptitle p"><span class="pdot"></span>Material Pelengkap</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Gasket / Seal (m)</label><input type="number" id="gasketLen" value="0" min="0"></div>
+        <div class="fg"><label class="fl">Harga Gasket (/m)</label><input type="number" id="gasketPrice" value="8000" step="500"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Silikon Sealant (tube)</label><input type="number" id="siliconQty" value="0" min="0"></div>
+        <div class="fg"><label class="fl">Harga Silikon (/tube)</label><input type="number" id="siliconPrice" value="45000" step="1000"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Sekrup / Baut (pcs)</label><input type="number" id="screwQty" value="0" min="0" step="10"></div>
+        <div class="fg"><label class="fl">Harga Sekrup (/pcs)</label><input type="number" id="screwPrice" value="500" step="100"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Cat / Powder Coat (kg)</label><input type="number" id="paintQty" value="0" min="0" step="0.5"></div>
+        <div class="fg"><label class="fl">Harga Cat (/kg)</label><input type="number" id="paintPrice" value="120000" step="5000"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BIAYA -->
+<div class="tab-pane" id="tab-config">
+  <div class="layout">
+    <div class="panel">
+      <div class="ptitle"><span class="pdot"></span>Markup &amp; Ongkos Kerja</div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Markup Material (%)</label><input type="number" id="markupPct" value="10" min="0" max="100"></div>
+        <div class="fg"><label class="fl">Ongkos Fabrikasi (/unit)</label><input type="number" id="fabCost" value="50000" step="5000"><span class="ul">per unit</span></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Ongkos Pasang (/unit)</label><input type="number" id="instCost" value="75000" step="5000"></div>
+        <div class="fg"><label class="fl">Biaya Pengiriman</label><input type="number" id="shippingCost" value="0" step="50000"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle"><span class="pdot"></span>Catatan Proyek</div>
+      <textarea id="notes" rows="5" placeholder="Catatan teknis, spesifikasi khusus..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- HITUNG -->
+<div style="margin-top:16px;">
+  <button class="bcalc" onclick="calculate()">⚙ HITUNG SEMUA KEBUTUHAN MATERIAL</button>
+  <button class="breset" onclick="resetAll()">↺ Reset Semua Data</button>
+</div>
+
+<!-- HASIL -->
+<div class="rp" id="resultPanel">
+  <div class="ptitle" style="margin-bottom:6px;"><span class="pdot"></span>Hasil Perhitungan</div>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:16px;">Dua metode ditampilkan untuk perbandingan. Gunakan metode aman untuk order material, metode optimasi sebagai referensi efisiensi maksimum.</p>
+
+  <!-- COMPARISON KUSEN -->
+  <div class="rsect">
+    <div class="rsttl" style="color:var(--accent);"><span style="width:5px;height:5px;background:var(--accent);border-radius:50%;display:inline-block;"></span>Perbandingan Metode — Kusen</div>
+    <div class="compare-grid" id="compareKusen"></div>
+  </div>
+
+  <!-- COMPARISON PINTU -->
+  <div class="rsect" id="secCmpPintu">
+    <div class="rsttl" style="color:var(--blue);"><span style="width:5px;height:5px;background:var(--blue);border-radius:50%;display:inline-block;"></span>Perbandingan Metode — Daun Pintu</div>
+    <div class="compare-grid" id="comparePintu"></div>
+  </div>
+
+  <!-- DETAIL TABLE KUSEN -->
+  <div class="rsect">
+    <div class="rsttl" style="color:var(--accent);"><span style="width:5px;height:5px;background:var(--accent);border-radius:50%;display:inline-block;"></span>Rincian Per Item Kusen</div>
+    <div style="overflow-x:auto;">
+      <table class="dt">
+        <thead><tr>
+          <th>#</th><th>Nama</th><th>Dimensi</th><th>Qty</th>
+          <th>Komponen</th>
+          <th style="text-align:right">Panjang/Unit (mm)</th>
+          <th style="text-align:right">Batang/Unit</th>
+          <th style="text-align:right">Batang Total (Aman)</th>
+        </tr></thead>
+        <tbody id="tbKusen"></tbody>
+      </table>
+    </div>
+    <div id="kusenKompDetail"></div>
+    <!-- Cutting plan visual -->
+    <div class="rsect" id="cuttingPlanKusen"></div>
+  </div>
+
+  <!-- DETAIL TABLE PINTU -->
+  <div class="rsect" id="secPintu">
+    <div class="rsttl" style="color:var(--blue);"><span style="width:5px;height:5px;background:var(--blue);border-radius:50%;display:inline-block;"></span>Rincian Per Item Daun Pintu</div>
+    <div style="overflow-x:auto;">
+      <table class="dt">
+        <thead><tr>
+          <th>#</th><th>Nama</th><th>Dimensi Opening</th><th>Qty</th>
+          <th>Batang/Unit</th>
+          <th style="text-align:right">🟡 Tiang Total (Aman)</th>
+          <th style="text-align:right">🔵 Ambang Total (Aman)</th>
+          <th style="text-align:right">Luas Kaca (m²)</th>
+        </tr></thead>
+        <tbody id="tbPintu"></tbody>
+      </table>
+    </div>
+    <div id="pintuKompDetail"></div>
+  </div>
+
+  <!-- HARDWARE -->
+  <div class="rsect" id="secHw">
+    <div class="rsttl" style="color:var(--purple);"><span style="width:5px;height:5px;background:var(--purple);border-radius:50%;display:inline-block;"></span>Hardware &amp; Aksesoris</div>
+    <div style="overflow-x:auto;">
+      <table class="dt">
+        <thead><tr><th>#</th><th>Item</th><th style="text-align:right">Qty</th><th style="text-align:right">Harga/pcs</th><th style="text-align:right">Subtotal</th></tr></thead>
+        <tbody id="tbHw"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BIAYA -->
+  <div class="rsect">
+    <div class="rsttl" style="color:var(--green);"><span style="width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block;"></span>Rekapitulasi Biaya (Berdasarkan Metode Aman)</div>
+    <div style="max-width:520px;" id="costBreakdown"></div>
+  </div>
+
+  <div class="gttl" id="grandTotal"></div>
+  <button class="bprint" onclick="window.print()">🖨 Cetak / Export Laporan</button>
+</div>
+
+<script>
+// ================================================================
+// STATE
+// ================================================================
+let items=[], hwItems=[];   // items: kusen+daun pintu unified
+let iId=0, hId=0;
+// backward compat aliases used in calculate
+let kusenItems, pintuItems;
+const profiles={
+  '40x40':{label:'40×40mm',weight:.58,price:85000,profW:40},
+  '50x50':{label:'50×50mm',weight:.78,price:105000,profW:50},
+  '60x40':{label:'60×40mm',weight:.92,price:125000,profW:60},
+  '100x50':{label:'100×50mm',weight:1.45,price:185000,profW:100},
+  custom:{label:'Custom',weight:1.0,price:100000,profW:40}
+};
+
+// ================================================================
+// TABS
+// ================================================================
+function switchTab(t,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ================================================================
+// PRESETS
+// ================================================================
+const PRESETS = [
+  { id:'pintu_single', name:'Pintu Tunggal',  icon:'🚪',
+    komps:[{tipe:'T',label:'Tiang Kiri',dim:'H'},{tipe:'T',label:'Tiang Kanan',dim:'H'},{tipe:'A',label:'Ambang Atas',dim:'W'}]
+  },
+  { id:'jendela',      name:'Jendela',         icon:'⬜',
+    komps:[{tipe:'T',label:'Tiang Kiri',dim:'H'},{tipe:'T',label:'Tiang Kanan',dim:'H'},{tipe:'A',label:'Ambang Atas',dim:'W'},{tipe:'A',label:'Ambang Bawah',dim:'W'}]
+  },
+  { id:'jendela_sliding', name:'Sliding',      icon:'⬛',
+    komps:[{tipe:'T',label:'Tiang Kiri',dim:'H'},{tipe:'T',label:'Tiang Tengah',dim:'H'},{tipe:'T',label:'Tiang Kanan',dim:'H'},{tipe:'A',label:'Ambang Atas',dim:'W'},{tipe:'A',label:'Ambang Bawah',dim:'W'}]
+  },
+  { id:'pintu_kaca',  name:'Pintu+Rel',        icon:'🪟',
+    komps:[{tipe:'T',label:'Tiang Kiri',dim:'H'},{tipe:'T',label:'Tiang Kanan',dim:'H'},{tipe:'A',label:'Ambang Atas',dim:'W'},{tipe:'A',label:'Ambang Bawah',dim:'W'},{tipe:'A',label:'Rel Tengah',dim:'W'}]
+  },
+  { id:'custom',      name:'Custom',           icon:'✏️',
+    komps:[]
+  },
+];
+
+// ================================================================
+// ITEMS — unified kusen + daun pintu per opening
+// ================================================================
+function addItem(presetId='pintu_single', n='', w=900, h=2100, q=1, hasDaun=null) {
+  const p = PRESETS.find(x=>x.id===presetId) || PRESETS[0];
+  const komps = p.komps.map(k=>({...k, custom_len:0}));
+  // default hasDaun: true untuk semua tipe kecuali custom
+  const defaultDaun = presetId !== 'custom';
+  items.push({
+    id: ++iId,
+    n: n || p.name,
+    w, h, q,
+    presetId,
+    komps,
+    hasDaun: hasDaun !== null ? hasDaun : defaultDaun,
+  });
+  renderItems();
+}
+
+function removeItem(id) { items = items.filter(i=>i.id!==id); renderItems(); }
+function updI(id, k, v) { const i=items.find(x=>x.id===id); if(i){ i[k]=v; renderItems(); } }
+function toggleDaun(id)  { const i=items.find(x=>x.id===id); if(i){ i.hasDaun=!i.hasDaun; renderItems(); } }
+function toggleKomp(id)  {
+  const panel=document.getElementById('komp-panel-'+id);
+  const btn  =document.getElementById('btn-komp-'+id);
+  if(!panel) return;
+  const open = panel.style.display!=='none';
+  panel.style.display = open?'none':'block';
+  btn.textContent = open?'⚙ Komponen':'✕ Tutup';
+  btn.classList.toggle('open',!open);
+}
+function addKomponen(id) {
+  const item=items.find(x=>x.id===id); if(!item) return;
+  item.komps.push({tipe:'A',label:'Komponen Baru',dim:'W',custom_len:0});
+  renderItems();
+  const p=document.getElementById('komp-panel-'+id);
+  const b=document.getElementById('btn-komp-'+id);
+  if(p){p.style.display='block';b.textContent='✕ Tutup';b.classList.add('open');}
+}
+function removeKomponen(id,ki) {
+  const item=items.find(x=>x.id===id); if(!item||item.komps.length<=1) return;
+  item.komps.splice(ki,1); renderItems();
+}
+function updKomp(id,ki,key,val) {
+  const item=items.find(x=>x.id===id); if(!item) return;
+  item.komps[ki][key]=val; renderItems();
+}
+function applyPreset(id, presetId) {
+  const item=items.find(x=>x.id===id);
+  const p=PRESETS.find(x=>x.id===presetId);
+  if(!item||!p) return;
+  item.komps=p.komps.map(k=>({...k,custom_len:0}));
+  item.presetId=presetId;
+  renderItems();
+}
+
+// Hitung panjang aktual satu komponen kusen
+function getKompLen(k, W, H, profW) {
+  if (k.tipe === 'C') return k.custom_len || 0;
+  if (k.tipe === 'T') return k.dim === 'W' ? W : H;
+  // tipe A (Ambang)
+  return k.dim === 'W' ? Math.max(0, W - 2 * profW) : H;
+}
+// Label deskriptif untuk tooltip
+function getKompLabel(k, W, H, profW) {
+  const len = getKompLen(k, W, H, profW);
+  if (k.tipe === 'C') return `${k.label}: ${len}mm (custom)`;
+  if (k.tipe === 'T') return `${k.label}: ${len}mm (${k.dim==='W'?'lebar':'tinggi'})`;
+  return `${k.label}: ${W}−2×${profW} = ${len}mm`;
+}
+
+function getProfW() {
+  const pt = document.getElementById('profileType').value;
+  return pt==='custom'
+    ? (parseFloat(document.getElementById('profW').value)||40)
+    : (profiles[pt]?.profW||40);
+}
+// Cek apakah preset ini tipe pintu (bukan jendela/casement)
+function isPintuPreset(presetId) {
+  return presetId === 'pintu_single' || presetId === 'pintu_kaca';
+}
+
+// Formula daun pintu:
+//   Tiang  = H − 1×profW(kusen atas) − gapAtas − gapBawah
+//   Ambang = W − 2×profW(kusen ki+ka) − gapKiri − gapKanan
+// Formula casement (jendela):
+//   Tiang  = H − 2×profW(kusen atas+bawah) − gapAtas − gapBawah
+//   Ambang = W − 2×profW(kusen ki+ka)       − gapKiri − gapKanan
+function getDaunPotongan(presetId, W, H, profW, gapAtas, gapBawah, gapKiri, gapKanan) {
+  const isPintu = isPintuPreset(presetId);
+  const tiangLen  = Math.max(0, H - (isPintu ? 1 : 2) * profW - gapAtas - gapBawah);
+  const ambangLen = Math.max(0, W - 2 * profW - gapKiri - gapKanan);
+  return { tiangLen, ambangLen, isPintu };
+}
+function getGaps() {
+  return {
+    gapAtas:  parseFloat(document.getElementById('gapAtas')?.value)  || 3,
+    gapBawah: parseFloat(document.getElementById('gapBawah')?.value) || 5,
+    gapKiri:  parseFloat(document.getElementById('gapKiri')?.value)  || 3,
+    gapKanan: parseFloat(document.getElementById('gapKanan')?.value) || 3,
+  };
+}
+
+function renderItems() {
+  const profW  = getProfW();
+  const {gapAtas, gapBawah, gapKiri, gapKanan} = getGaps();
+  const el = document.getElementById('itemList'); el.innerHTML='';
+
+  items.forEach(item => {
+    const {tiangLen, ambangLen, isPintu} = getDaunPotongan(item.presetId, item.w, item.h, profW, gapAtas, gapBawah, gapKiri, gapKanan);
+    const daunLabel  = isPintu ? '🚪 Daun Pintu' : '🪟 Daun Casement';
+    const daunColor  = isPintu ? 'var(--blue)' : 'var(--purple)';
+    const daunBg     = isPintu ? 'rgba(74,158,255,.06)' : 'rgba(176,106,255,.06)';
+    const daunBorder = isPintu ? 'rgba(74,158,255,.2)'  : 'rgba(176,106,255,.3)';
+    const tiangFormula  = isPintu
+      ? `${item.h}−${profW}(kusen atas)−${gapAtas}(atas)−${gapBawah}(bwh)`
+      : `${item.h}−2×${profW}(kusen atas+bwh)−${gapAtas}(atas)−${gapBawah}(bwh)`;
+    const ambangFormula = `${item.w}−2×${profW}(kusen ki+ka)−${gapKiri}(ki)−${gapKanan}(ka)`;
+    const presetOpts = PRESETS.map(p=>`<option value="${p.id}" ${item.presetId===p.id?'selected':''}>${p.icon} ${p.name}</option>`).join('');
+
+    // Kusen potongan labels
+    const kusenSummary = item.komps.map(k=>{
+      const len = getKompLen(k, item.w, item.h, profW);
+      return `<span class="komp-tag tag-${k.tipe}" title="${getKompLabel(k,item.w,item.h,profW)}">${k.label}·${len}mm</span>`;
+    }).join('');
+    const kusenTotal = item.komps.reduce((s,k)=>s+getKompLen(k,item.w,item.h,profW),0);
+
+    // Daun section (conditional)
+    const daunSection = item.hasDaun ? `
+      <div style="margin:0 12px 10px;padding:8px 12px;background:${daunBg};border:1px solid ${daunBorder};">
+        <div style="font-family:var(--head);font-size:10px;letter-spacing:1.5px;color:${daunColor};margin-bottom:6px;text-transform:uppercase;">${daunLabel} — dari opening yang sama</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+          <span class="komp-tag tag-T">Tiang Ki·${tiangLen}mm</span>
+          <span class="komp-tag tag-T">Tiang Ka·${tiangLen}mm</span>
+          <span class="komp-tag tag-A">Ambang At·${ambangLen}mm</span>
+          <span class="komp-tag tag-A">Ambang Bw·${ambangLen}mm</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--muted);padding:2px 4px;">= ${fmt(tiangLen*2+ambangLen*2)}mm/unit</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:5px;">
+          Tiang = ${tiangFormula} = <strong style="color:${daunColor}">${tiangLen}mm</strong>
+          &nbsp;|&nbsp; Ambang = ${ambangFormula} = <strong style="color:${daunColor}">${ambangLen}mm</strong>
+        </div>
+      </div>` : '';
+
+    // Komponen rows editor
+    const kompRows = item.komps.map((k,ki)=>{
+      const lenVal = getKompLen(k, item.w, item.h, profW);
+      return `
+        <div class="komp-item-row">
+          <select onchange="updKomp(${item.id},${ki},'tipe',this.value)">
+            <option value="T" ${k.tipe==='T'?'selected':''}>🟡 Tiang</option>
+            <option value="A" ${k.tipe==='A'?'selected':''}>🔵 Ambang</option>
+            <option value="C" ${k.tipe==='C'?'selected':''}>🟣 Custom mm</option>
+          </select>
+          <input type="text" value="${k.label}" placeholder="Label..." onchange="updKomp(${item.id},${ki},'label',this.value)" style="font-family:var(--body)">
+          ${k.tipe==='C'
+            ? `<input type="number" value="${k.custom_len||0}" min="0" step="10" onchange="updKomp(${item.id},${ki},'custom_len',+this.value)">`
+            : `<select onchange="updKomp(${item.id},${ki},'dim',this.value)">
+                 <option value="H" ${k.dim==='H'?'selected':''}>= Tinggi (${item.h}mm)</option>
+                 <option value="W" ${k.dim==='W'?'selected':''}>= ${k.tipe==='A'?`Lebar−2×${profW}=${lenVal}mm`:`Lebar (${item.w}mm)`}</option>
+               </select>`
+          }
+          <button class="bdel" onclick="removeKomponen(${item.id},${ki})" ${item.komps.length<=1?'disabled':''}>×</button>
+        </div>`;
+    }).join('');
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.innerHTML = `
+      <div class="item-card-head">
+        <div>
+          <div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-bottom:3px;">NAMA / TIPE</div>
+          <select onchange="applyPreset(${item.id},this.value)" style="font-size:11px;padding:5px 6px;background:var(--panel);border:1px solid var(--border);color:var(--text);margin-bottom:3px;display:block;width:100%;">${presetOpts}</select>
+          <input type="text" value="${item.n}" placeholder="Nama custom..." onchange="updI(${item.id},'n',this.value)" style="font-family:var(--body);font-size:11px;width:100%;">
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-bottom:2px;">LEBAR mm</div>
+          <input type="number" value="${item.w}" min="100" step="10" onchange="updI(${item.id},'w',+this.value)">
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-bottom:2px;">TINGGI mm</div>
+          <input type="number" value="${item.h}" min="100" step="10" onchange="updI(${item.id},'h',+this.value)">
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-bottom:2px;">QTY</div>
+          <input type="number" value="${item.q}" min="1" onchange="updI(${item.id},'q',+this.value)">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <button class="btn-toggle-komp ${item.hasDaun?'open':''}" onclick="toggleDaun(${item.id})" style="${item.hasDaun?`border-color:${daunColor};color:${daunColor};background:${daunBg};`:''}" title="Toggle ada/tidak daun">
+            ${item.hasDaun ? daunLabel : (isPintu?'Tanpa Daun Pintu':'Tanpa Casement')}
+          </button>
+          <button class="btn-toggle-komp" id="btn-komp-${item.id}" onclick="toggleKomp(${item.id})">⚙ Kusen</button>
+        </div>
+        <button class="bdel" onclick="removeItem(${item.id})">×</button>
+      </div>
+
+      <div class="komp-summary-wrap">
+        ${kusenSummary}
+        <span style="font-family:var(--mono);font-size:9px;color:var(--muted);padding:2px 4px;">kusen: ${item.komps.length}pcs · ${fmt(kusenTotal)}mm/unit</span>
+      </div>
+
+      ${daunSection}
+
+      <div class="icard-komponen">
+        <div id="komp-panel-${item.id}" style="display:none;">
+          <div class="icard-komp-title">
+            <span>Komponen Kusen
+              <span style="font-size:9px;color:var(--muted);font-weight:400;margin-left:8px;font-family:var(--mono);">
+                🟡 Tiang=full tinggi &nbsp;|&nbsp; 🔵 Ambang=lebar−2×${profW}mm
+              </span>
+            </span>
+          </div>
+          <div style="display:grid;grid-template-columns:120px 1fr 90px 24px;gap:6px;margin-bottom:4px;">
+            <span style="font-size:9px;color:var(--muted);font-family:var(--mono);">TIPE</span>
+            <span style="font-size:9px;color:var(--muted);font-family:var(--mono);">LABEL</span>
+            <span style="font-size:9px;color:var(--muted);font-family:var(--mono);">PANJANG</span>
+            <span></span>
+          </div>
+          <div class="komp-rows">${kompRows}</div>
+          <button class="badd-komp" onclick="addKomponen(${item.id})">+ Tambah Komponen</button>
+        </div>
+      </div>`;
+    el.appendChild(card);
+  });
+
+  document.getElementById('bk').textContent = items.length;
+}
+
+// ================================================================
+// HARDWARE
+// ================================================================
+function addHardware(n='',q=1,p=50000){hwItems.push({id:++hId,n,q,p});renderHw();}
+function removeHw(id){hwItems=hwItems.filter(i=>i.id!==id);renderHw();}
+function updH(id,k,v){const i=hwItems.find(x=>x.id===id);if(i)i[k]=v;}
+function renderHw(){
+  const el=document.getElementById('hwList');el.innerHTML='';
+  hwItems.forEach(item=>{
+    const r=document.createElement('div');r.className='ir ir-h';
+    r.innerHTML=`
+      <input type="text" value="${item.n}" placeholder="Nama hardware..." onchange="updH(${item.id},'n',this.value)" style="font-family:var(--body)">
+      <input type="number" value="${item.q}" min="0" onchange="updH(${item.id},'q',+this.value)">
+      <input type="number" value="${item.p}" min="0" step="1000" onchange="updH(${item.id},'p',+this.value)">
+      <button class="bdel" onclick="removeHw(${item.id})">×</button>`;
+    el.appendChild(r);
+  });
+  document.getElementById('bh').textContent=hwItems.length;
+}
+
+// ================================================================
+// PROFILE INFO
+// ================================================================
+function updateProfileInfo(){
+  const pt=document.getElementById('profileType').value;
+  document.getElementById('customProfile').style.display=pt==='custom'?'block':'none';
+  const p=profiles[pt], bl=document.getElementById('barLength').value;
+  const pw = pt==='custom' ? (parseFloat(document.getElementById('profW').value)||40) : p.profW;
+  document.getElementById('profileInfo').innerHTML=
+    `Tipe &nbsp;&nbsp;: <span style="color:var(--accent)">${p.label}</span><br>
+     Lebar profil: <span style="color:var(--accent)">${pw}mm</span> <span style="color:var(--muted);font-size:10px;">(digunakan untuk hitung potongan ambang)</span><br>
+     Berat &nbsp;: <span style="color:var(--accent)">${p.weight} kg/m</span><br>
+     Harga &nbsp;: <span style="color:var(--accent)">Rp ${p.price.toLocaleString('id')} / batang</span><br>
+     Std &nbsp;&nbsp;&nbsp;: <span style="color:var(--accent)">${bl} m / batang</span>`;
+  renderItems();
+}
+
+// ================================================================
+// CORE LOGIC
+// ================================================================
+
+/**
+ * METODE AMAN (Per-Unit):
+ * Setiap unit dihitung batang yang dibutuhkan sendiri.
+ * Logika: 1 unit punya potongan-potongan tertentu.
+ * Setiap potongan di-fit ke batang, sisa TIDAK dipakai unit lain.
+ * 
+ * Contoh: Kusen 700×2500
+ *   Potongan: 2500, 2500, 700 → total 5700mm per unit
+ *   Batang 6000mm: bisa muat? 2500+2500=5000 (sisa 1000), tapi 700 tidak muat di sisa.
+ *   → butuh 2 batang per unit (1 batang untuk 2 tiang, 1 batang untuk ambang)
+ *   → 50 unit × 2 batang = 100 batang
+ * 
+ * Untuk itu kita perlu Bin Packing per unit.
+ */
+function hitsungBatangPerUnit(potonganLabeled, BLmm, kerf) {
+  // potonganLabeled: [{len, label}], sorted descending
+  const sorted = [...potonganLabeled].sort((a,b)=>b.len-a.len);
+  const bins = []; // {sisa, pieces:[{len,label,kerf}]}
+  for (const item of sorted) {
+    const withKerf = item.len + kerf;
+    let fitted = false;
+    for (let i=0;i<bins.length;i++){
+      if (bins[i].sisa >= withKerf){
+        bins[i].sisa -= withKerf;
+        bins[i].pieces.push({len:item.len, label:item.label, kerf});
+        fitted = true; break;
+      }
+    }
+    if (!fitted) bins.push({sisa: BLmm - withKerf, pieces:[{len:item.len, label:item.label, kerf}]});
+  }
+  return {
+    bars: bins.length,
+    sisa: bins.reduce((s,b)=>s+b.sisa,0),
+    binsDetail: bins
+  };
+}
+
+function hitungBatangOptimasi(semuaPotonganLabeled, BLmm, kerf) {
+  const sorted = [...semuaPotonganLabeled].sort((a,b)=>b.len-a.len);
+  const bins = [];
+  for (const item of sorted) {
+    const withKerf = item.len + kerf;
+    let fitted = false;
+    for (let i=0;i<bins.length;i++){
+      if (bins[i].sisa >= withKerf){
+        bins[i].sisa -= withKerf;
+        bins[i].pieces.push({len:item.len, label:item.label, kerf});
+        fitted = true; break;
+      }
+    }
+    if (!fitted) bins.push({sisa: BLmm - withKerf, pieces:[{len:item.len, label:item.label, kerf}]});
+  }
+  const totalSisa = bins.reduce((s,b)=>s+b.sisa,0);
+  const totalUsed = sorted.reduce((s,p)=>s+p.len+kerf,0);
+  const eff = bins.length>0 ? ((totalUsed/(bins.length*BLmm))*100).toFixed(1) : 0;
+  return { bars:bins.length, sisa:totalSisa, eff, binsDetail:bins };
+}
+
+// ================================================================
+// HELPERS
+// ================================================================
+function fmt(n){return Math.round(n).toLocaleString('id');}
+function fmtRp(n){return 'Rp '+Math.round(n).toLocaleString('id');}
+function segColor(i){
+  const colors=['rgba(245,166,35,.7)','rgba(74,158,255,.7)','rgba(61,220,132,.7)','rgba(176,106,255,.7)','rgba(255,180,50,.7)','rgba(50,200,255,.7)'];
+  return colors[i%colors.length];
+}
+
+// ================================================================
+// CALCULATE
+// ================================================================
+function calculate(){
+  if(!items.length){alert('Tambahkan item dulu.');return;}
+  // split items into kusen and daun pintu for calculation
+  kusenItems = items;
+  pintuItems = items.filter(i=>i.hasDaun);
+  const BLmm = parseFloat(document.getElementById('barLength').value)*1000;
+  const BLm  = parseFloat(document.getElementById('barLength').value);
+  const kerf = parseFloat(document.getElementById('kerf').value);
+  const wastePct = parseFloat(document.getElementById('wastePct').value)/100;
+  const pt   = document.getElementById('profileType').value;
+  const prBar= profiles[pt].price;
+  const wpm  = profiles[pt].weight;
+  const profW = pt==='custom'
+    ? (parseFloat(document.getElementById('profW').value)||40)
+    : (profiles[pt]?.profW||40);
+
+  const kacaOverlap = parseFloat(document.getElementById('kacaOverlap').value);
+  const kacaWaste   = parseFloat(document.getElementById('kacaWaste').value)/100;
+  const kacaPrice   = parseFloat(document.getElementById('kacaPrice').value);
+  const pintuBarPrice = parseFloat(document.getElementById('pintuBarPrice').value);
+  const useSameProfil = document.getElementById('pintuSamaProfil').value==='yes';
+
+  const mkPct  = parseFloat(document.getElementById('markupPct').value)/100;
+  const fabC   = parseFloat(document.getElementById('fabCost').value);
+  const insC   = parseFloat(document.getElementById('instCost').value);
+  const shipC  = parseFloat(document.getElementById('shippingCost').value);
+
+    // ==================== KUSEN ====================
+  let kRows=[], kAmanTotal=0, kSemuaPotongan=[], kTotUnits=0;
+
+  kusenItems.forEach((item,i)=>{
+    const W=item.w, H=item.h, Q=item.q;
+    const nm = item.n||`Item ${i+1}`;
+    const potonganLabeled = (item.komps||[]).map(k=>({
+      len: getKompLen(k,W,H,profW),
+      label: k.label
+    })).filter(p=>p.len>0);
+
+    const perUnit = hitsungBatangPerUnit(potonganLabeled, BLmm, kerf);
+    const amanBars = perUnit.bars * Q;
+    const amanFinal = Math.ceil(amanBars * (1 + wastePct));
+
+    for(let u=0; u<Q; u++){
+      potonganLabeled.forEach(p => kSemuaPotongan.push({len:p.len, label:`${nm}#${u+1} ${p.label}`}));
+    }
+
+    kAmanTotal += amanFinal;
+    kTotUnits  += Q;
+    const panjangPerUnit = potonganLabeled.reduce((s,p)=>s+p.len,0) + potonganLabeled.length*kerf;
+
+    kRows.push({
+      i:i+1, n:nm,
+      dim:`${W}×${H}`, Q,
+      potonganLabeled,
+      perUnitBins: perUnit.binsDetail,
+      panjangPerUnit: Math.round(panjangPerUnit),
+      barsPerUnit: perUnit.bars,
+      sisaPerUnit: Math.round(perUnit.sisa),
+      amanBars:amanFinal,
+      kompDesc: potonganLabeled.map(p=>`${p.label}(${p.len}mm)`).join(', ')
+    });
+  });
+
+  // METODE OPTIMASI KUSEN
+  const kOpti = hitungBatangOptimasi(kSemuaPotongan, BLmm, kerf);
+  const kOptiLenM = (kSemuaPotongan.reduce((s,p)=>s+p.len,0)/1000).toFixed(2);
+  const kAmanLenM = (kAmanTotal * BLm).toFixed(1);
+  const kAmanKg   = (kAmanTotal * BLm * wpm).toFixed(1);
+
+  // ==================== DAUN PINTU / CASEMENT ====================
+  const {gapAtas, gapBawah, gapKiri, gapKanan} = getGaps();
+  const ambangBarPrice  = parseFloat(document.getElementById('ambangBarPrice').value) || 110000;
+  const ambangBLm       = parseFloat(document.getElementById('ambangBarLength').value) || BLm;
+  const ambangBLmm      = ambangBLm * 1000;
+
+  // pintu: tiang & ambang profil BERBEDA → dipisah
+  // casement: tiang & ambang profil SAMA → digabung ke batch tiang
+  let pRows=[], pTiangAmanTotal=0, pAmbangAmanTotal=0, pCasementAmanTotal=0;
+  let pSemuaTiang=[], pSemuaAmbang=[], pSemuaCasement=[];
+  let pTotUnits=0, totalKacaArea=0, costKaca=0;
+
+  pintuItems.forEach((item,i)=>{
+    const W=item.w, H=item.h, Q=item.q;
+    const nm = item.n||`Daun ${i+1}`;
+    const {tiangLen, ambangLen, isPintu} = getDaunPotongan(item.presetId, W, H, profW, gapAtas, gapBawah, gapKiri, gapKanan);
+
+    const tiangPotongan  = [{len:tiangLen, label:'Tiang Ki'},{len:tiangLen, label:'Tiang Ka'}].filter(p=>p.len>0);
+    const ambangPotongan = [{len:ambangLen,label:'Ambang At'},{len:ambangLen,label:'Ambang Bw'}].filter(p=>p.len>0);
+
+    let tiangAman=0, ambangAman=0, casementAman=0;
+    let tiangBinsPerUnit=[], ambangBinsPerUnit=[];
+
+    if (isPintu) {
+      // Pintu: tiang & ambang dihitung & dibiaya TERPISAH
+      const tiangPerUnit  = hitsungBatangPerUnit(tiangPotongan,  BLmm,      kerf);
+      const ambangPerUnit = hitsungBatangPerUnit(ambangPotongan, ambangBLmm, kerf);
+      tiangAman  = Math.ceil(tiangPerUnit.bars  * Q * (1+wastePct));
+      ambangAman = Math.ceil(ambangPerUnit.bars * Q * (1+wastePct));
+      tiangBinsPerUnit  = tiangPerUnit.binsDetail;
+      ambangBinsPerUnit = ambangPerUnit.binsDetail;
+      pTiangAmanTotal  += tiangAman;
+      pAmbangAmanTotal += ambangAman;
+      for(let u=0;u<Q;u++){
+        tiangPotongan.forEach(p  => pSemuaTiang.push( {len:p.len, label:`${nm}#${u+1} ${p.label}`}));
+        ambangPotongan.forEach(p => pSemuaAmbang.push({len:p.len, label:`${nm}#${u+1} ${p.label}`}));
+      }
+    } else {
+      // Casement: tiang & ambang SAMA profil → gabung dalam 1 batch per unit
+      const semuaPotongan = [...tiangPotongan, ...ambangPotongan];
+      const perUnit = hitsungBatangPerUnit(semuaPotongan, BLmm, kerf);
+      casementAman  = Math.ceil(perUnit.bars * Q * (1+wastePct));
+      tiangBinsPerUnit  = perUnit.binsDetail; // untuk sketsa, pakai bins gabungan
+      ambangBinsPerUnit = [];
+      pCasementAmanTotal += casementAman;
+      for(let u=0;u<Q;u++){
+        semuaPotongan.forEach(p => pSemuaCasement.push({len:p.len, label:`${nm}#${u+1} ${p.label}`}));
+      }
+    }
+
+    // Kaca dari ukuran DAUN
+    const kW = Math.max(0, ambangLen - 2*kacaOverlap);
+    const kH = Math.max(0, tiangLen  - 2*kacaOverlap);
+    const kacaTot = (kW/1000)*(kH/1000) * Q * (1+kacaWaste);
+    totalKacaArea += kacaTot;
+    costKaca += kacaTot * kacaPrice;
+
+    pTotUnits += Q;
+    const allPotongan = [...tiangPotongan,...ambangPotongan];
+    const panjangPerUnit = allPotongan.reduce((s,p)=>s+p.len,0) + allPotongan.length*kerf;
+
+    const barsPerUnitDisplay = isPintu
+      ? `${hitsungBatangPerUnit(tiangPotongan,BLmm,kerf).bars} tiang + ${hitsungBatangPerUnit(ambangPotongan,ambangBLmm,kerf).bars} ambang`
+      : `${hitsungBatangPerUnit([...tiangPotongan,...ambangPotongan],BLmm,kerf).bars} btg`;
+
+    pRows.push({
+      i:i+1, n:nm, dim:`${W}×${H}`, Q,
+      presetId: item.presetId, isPintu,
+      tiangPotongan, ambangPotongan,
+      tiangPerUnit: tiangBinsPerUnit,
+      ambangPerUnit: ambangBinsPerUnit,
+      tiangBarsPerUnit:  isPintu ? hitsungBatangPerUnit(tiangPotongan,BLmm,kerf).bars  : 0,
+      ambangBarsPerUnit: isPintu ? hitsungBatangPerUnit(ambangPotongan,ambangBLmm,kerf).bars : 0,
+      casementBarsPerUnit: isPintu ? 0 : hitsungBatangPerUnit([...tiangPotongan,...ambangPotongan],BLmm,kerf).bars,
+      tiangAman, ambangAman, casementAman,
+      barsPerUnitDisplay,
+      panjangPerUnit: Math.round(panjangPerUnit),
+      kacaLuas: kacaTot.toFixed(3),
+      tiangLen, ambangLen, openW:W, openH:H
+    });
+  });
+
+  const pOptiTiang    = pSemuaTiang.length>0    ? hitungBatangOptimasi(pSemuaTiang,    BLmm,      kerf) : {bars:0,sisa:0,eff:0,binsDetail:[]};
+  const pOptiAmbang   = pSemuaAmbang.length>0   ? hitungBatangOptimasi(pSemuaAmbang,   ambangBLmm,kerf) : {bars:0,sisa:0,eff:0,binsDetail:[]};
+  const pOptiCasement = pSemuaCasement.length>0 ? hitungBatangOptimasi(pSemuaCasement, BLmm,      kerf) : {bars:0,sisa:0,eff:0,binsDetail:[]};
+  const pricePerBarTiang = useSameProfil ? prBar : pintuBarPrice;
+
+  // ==================== HARDWARE ====================
+  let hRows=[], totHwCost=0;
+  hwItems.forEach((item,i)=>{
+    if(item.q>0){const sub=item.q*item.p;totHwCost+=sub;hRows.push({i:i+1,n:item.n,q:item.q,p:item.p,sub});}
+  });
+  const gasT=parseFloat(document.getElementById('gasketLen').value)*parseFloat(document.getElementById('gasketPrice').value)||0;
+  const silT=parseFloat(document.getElementById('siliconQty').value)*parseFloat(document.getElementById('siliconPrice').value)||0;
+  const scrT=parseFloat(document.getElementById('screwQty').value)*parseFloat(document.getElementById('screwPrice').value)||0;
+  const pntT=parseFloat(document.getElementById('paintQty').value)*parseFloat(document.getElementById('paintPrice').value)||0;
+  const matTmb=gasT+silT+scrT+pntT;
+
+  // ==================== COST ====================
+  const costKusenAman  = kAmanTotal           * prBar;
+  const costTiangAman  = pTiangAmanTotal      * pricePerBarTiang;
+  const costAmbangAman = pAmbangAmanTotal     * ambangBarPrice;
+  const costCasementAman = pCasementAmanTotal * pricePerBarTiang; // casement pakai profil sama dengan tiang pintu
+  const costPintuAman  = costTiangAman + costAmbangAman + costCasementAman;
+  const totUnits       = kTotUnits + pTotUnits;
+  const fab    = fabC*totUnits;
+  const ins    = insC*totUnits;
+  const matBase= costKusenAman + costPintuAman + costKaca + totHwCost + matTmb;
+  const subtotal= matBase+fab+ins+shipC;
+  const markup = subtotal*mkPct;
+  const grand  = subtotal+markup;
+
+  // ================================================================
+  // RENDER — COMPARISON KUSEN
+  // ================================================================
+  const penghematan = kAmanTotal - kOpti.bars;
+  document.getElementById('compareKusen').innerHTML=`
+    <div class="cmp-card aman">
+      <span class="badge-recommend badge-safe">REKOMEN ORDER</span>
+      <div class="cmp-header">Metode Aman</div>
+      <div class="cmp-desc">Tiap unit dihitung sendiri. Sisa potongan dari 1 unit <strong>tidak</strong> digunakan unit lain. Paling aman untuk order ke supplier.</div>
+      <div class="cmp-main">${kAmanTotal}</div>
+      <div class="cmp-sub">batang profil aluminium</div>
+      <div style="margin-top:12px;">
+        ${kRows.map(r=>`
+          <div class="cmp-stat">
+            <span class="cmp-sn">${r.n} (${r.Q} unit)</span>
+            <span class="cmp-sv">${r.barsPerUnit} btg/unit × ${r.Q} = ${r.amanBars} btg</span>
+          </div>`).join('')}
+        ${wastePct>0?`<div class="cmp-stat"><span class="cmp-sn">+ Waste ${(wastePct*100).toFixed(0)}%</span><span class="cmp-sv">sudah termasuk</span></div>`:''}
+      </div>
+      <div class="wbw" style="margin-top:12px;">
+        <div class="wbl"><span>Efisiensi batang terpakai</span><span>${((kSemuaPotongan.reduce((s,p)=>s+p.len,0)+kSemuaPotongan.length*kerf)/(kAmanTotal*BLmm)*100).toFixed(1)}%</span></div>
+        <div class="wbt"><div class="wbf" style="width:${Math.min(((kSemuaPotongan.reduce((s,p)=>s+p.len,0)+kSemuaPotongan.length*kerf)/(kAmanTotal*BLmm)*100),100)}%"></div></div>
+      </div>
+    </div>
+    <div class="cmp-card opti">
+      <span class="badge-recommend badge-eff">PALING EFISIEN</span>
+      <div class="cmp-header">Metode Optimasi</div>
+      <div class="cmp-desc">Sisa potongan dari 1 batang <strong>bisa dipakai</strong> unit lain. Membutuhkan perencanaan potong (cutting plan) yang ketat di workshop.</div>
+      <div class="cmp-main">${kOpti.bars}</div>
+      <div class="cmp-sub">batang profil aluminium</div>
+      <div style="margin-top:12px;">
+        <div class="cmp-stat"><span class="cmp-sn">Total potongan diproses</span><span class="cmp-sv">${kSemuaPotongan.length} pcs</span></div>
+        <div class="cmp-stat"><span class="cmp-sn">Total panjang material</span><span class="cmp-sv">${(kSemuaPotongan.reduce((s,p)=>s+p.len,0)/1000).toFixed(2)} m</span></div>
+        <div class="cmp-stat"><span class="cmp-sn">Sisa material (scrap)</span><span class="cmp-sv">${(kOpti.sisa/1000).toFixed(2)} m</span></div>
+        <div class="cmp-stat"><span class="cmp-sn">Selisih vs Metode Aman</span><span class="cmp-sv" style="color:var(--green);">hemat ${penghematan} batang</span></div>
+      </div>
+      <div class="wbw" style="margin-top:12px;">
+        <div class="wbl"><span>Efisiensi material</span><span>${kOpti.eff}%</span></div>
+        <div class="wbt"><div class="wbf b" style="width:${kOpti.eff}%"></div></div>
+      </div>
+    </div>`;
+
+  // ================================================================
+  // RENDER — COMPARISON DAUN PINTU
+  // ================================================================
+  const secCmpPintu = document.getElementById('secCmpPintu');
+  secCmpPintu.style.display = pRows.length?'block':'none';
+  if(pRows.length){
+    const pintuRows    = pRows.filter(r=>r.isPintu);
+    const casementRows = pRows.filter(r=>!r.isPintu);
+    const penghematanTiang    = pTiangAmanTotal    - pOptiTiang.bars;
+    const penghematanAmbang   = pAmbangAmanTotal   - pOptiAmbang.bars;
+    const penghematanCasement = pCasementAmanTotal - pOptiCasement.bars;
+
+    document.getElementById('comparePintu').innerHTML=`
+      <div class="cmp-card aman">
+        <span class="badge-recommend badge-safe">REKOMEN ORDER</span>
+        <div class="cmp-header">Metode Aman</div>
+        ${pintuRows.length ? `
+        <div style="margin-bottom:10px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:6px 0 4px;">🚪 Profil Tiang Daun Pintu</div>
+          <div class="cmp-main" style="font-size:22px;">${pTiangAmanTotal} <span style="font-size:12px;">batang</span></div>
+          ${pintuRows.map(r=>`<div class="cmp-stat"><span class="cmp-sn">${r.n} (${r.Q}×)</span><span class="cmp-sv">${r.tiangBarsPerUnit} btg/unit → ${r.tiangAman} btg</span></div>`).join('')}
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:8px 0 4px;">🔵 Profil Ambang Daun Pintu (berbeda)</div>
+          <div class="cmp-main" style="font-size:22px;">${pAmbangAmanTotal} <span style="font-size:12px;">batang</span></div>
+          ${pintuRows.map(r=>`<div class="cmp-stat"><span class="cmp-sn">${r.n} (${r.Q}×)</span><span class="cmp-sv">${r.ambangBarsPerUnit} btg/unit → ${r.ambangAman} btg</span></div>`).join('')}
+        </div>` : ''}
+        ${casementRows.length ? `
+        <div style="${pintuRows.length?'border-top:1px solid rgba(42,48,64,.5);padding-top:10px;':''}">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:6px 0 4px;">🪟 Profil Casement (tiang+ambang sama)</div>
+          <div class="cmp-main" style="font-size:22px;">${pCasementAmanTotal} <span style="font-size:12px;">batang</span></div>
+          ${casementRows.map(r=>`<div class="cmp-stat"><span class="cmp-sn">${r.n} (${r.Q}×)</span><span class="cmp-sv">${r.casementBarsPerUnit} btg/unit → ${r.casementAman} btg</span></div>`).join('')}
+        </div>` : ''}
+      </div>
+      <div class="cmp-card opti">
+        <span class="badge-recommend badge-eff">PALING EFISIEN</span>
+        <div class="cmp-header">Metode Optimasi</div>
+        ${pintuRows.length ? `
+        <div style="margin-bottom:10px;">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:6px 0 4px;">🚪 Profil Tiang Pintu</div>
+          <div class="cmp-main" style="font-size:22px;">${pOptiTiang.bars} <span style="font-size:12px;">batang</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Efisiensi</span><span class="cmp-sv">${pOptiTiang.eff}%</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Hemat</span><span class="cmp-sv" style="color:var(--green);">${penghematanTiang} btg</span></div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:8px 0 4px;">🔵 Profil Ambang Pintu</div>
+          <div class="cmp-main" style="font-size:22px;">${pOptiAmbang.bars} <span style="font-size:12px;">batang</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Efisiensi</span><span class="cmp-sv">${pOptiAmbang.eff}%</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Hemat</span><span class="cmp-sv" style="color:var(--green);">${penghematanAmbang} btg</span></div>
+        </div>` : ''}
+        ${casementRows.length ? `
+        <div style="${pintuRows.length?'border-top:1px solid rgba(42,48,64,.5);padding-top:10px;':''}">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin:6px 0 4px;">🪟 Profil Casement</div>
+          <div class="cmp-main" style="font-size:22px;">${pOptiCasement.bars} <span style="font-size:12px;">batang</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Efisiensi</span><span class="cmp-sv">${pOptiCasement.eff}%</span></div>
+          <div class="cmp-stat"><span class="cmp-sn">Hemat</span><span class="cmp-sv" style="color:var(--green);">${penghematanCasement} btg</span></div>
+        </div>` : ''}
+      </div>`;
+  }
+
+  // ================================================================
+  // TABLE KUSEN
+  // ================================================================
+  document.getElementById('tbKusen').innerHTML=kRows.map(r=>`
+    <tr>
+      <td class="ta">${r.i}</td><td>${r.n}</td><td>${r.dim} mm</td>
+      <td class="ta">${r.Q} unit</td>
+      <td style="color:var(--muted);font-size:10px;max-width:180px;word-break:break-all;">${r.kompDesc}</td>
+      <td class="ta">${fmt(r.panjangPerUnit)}</td>
+      <td class="ta">${r.barsPerUnit} btg/unit</td>
+      <td class="tg">${r.amanBars} btg</td>
+    </tr>`).join('');
+
+  // Komponen breakdown contoh + sketsa per unit
+  if(items.length>0 && kRows.length>0){
+    const s=items[0];
+    const r=kRows[0];
+    const exBins = r.perUnitBins;
+    const kompListHTML = r.potonganLabeled.map(p=>`
+      <div class="komp-row"><span class="kl">${p.label}</span><span class="kv">${fmt(p.len)} mm</span></div>`).join('');
+    document.getElementById('kusenKompDetail').innerHTML=`
+      <div class="komp-box">
+        <div class="komp-title">Komponen — 1 unit "${r.n}" (${s.w}×${s.h}mm)</div>
+        ${kompListHTML}
+        <div class="komp-row"><span class="kl">Kerf (${r.potonganLabeled.length} pot. × ${kerf}mm)</span><span class="kv">${fmt(r.potonganLabeled.length*kerf)} mm</span></div>
+        <div class="komp-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:2px;">
+          <span class="kl">Total panjang per unit</span><span class="kv kt">${fmt(r.panjangPerUnit)} mm</span>
+        </div>
+        <div class="komp-row">
+          <span class="kl">Batang dibutuhkan per unit</span>
+          <span class="kv kt" style="color:var(--accent);">${r.barsPerUnit} batang</span>
+        </div>
+      </div>
+      ${buildCuttingSketch(exBins, BLmm, `Sketsa potongan — 1 unit "${r.n}" (${s.w}×${s.h}mm)`, 10)}`;
+  }
+
+  // Cutting plan sketsa optimasi kusen
+  document.getElementById('cuttingPlanKusen').innerHTML =
+    buildCuttingSketch(kOpti.binsDetail, BLmm,
+      `Sketsa Cutting Plan Optimasi — Semua Kusen (${kOpti.bars} batang · efisiensi ${kOpti.eff}%)`, 20);
+
+
+  // ================================================================
+  // TABLE DAUN PINTU
+  // ================================================================
+  document.getElementById('secPintu').style.display=pRows.length?'block':'none';
+  document.getElementById('tbPintu').innerHTML=pRows.map(r=>`
+    <tr>
+      <td class="tb">${r.i}</td>
+      <td>${r.n} ${r.isPintu?'🚪':'🪟'}</td>
+      <td>${r.dim} mm</td>
+      <td class="tb">${r.Q} unit</td>
+      <td class="tb" style="font-size:10px;">${r.barsPerUnitDisplay}</td>
+      <td class="tg">${r.isPintu ? r.tiangAman+' btg tiang' : '—'}</td>
+      <td class="tg">${r.isPintu ? r.ambangAman+' btg ambang' : r.casementAman+' btg casement'}</td>
+      <td class="tb">${r.kacaLuas} m²</td>
+    </tr>`).join('');
+
+  if(pRows.length>0){
+    const r0 = pRows[0];
+    const kW = Math.max(0, r0.ambangLen - 2*kacaOverlap);
+    const kH = Math.max(0, r0.tiangLen  - 2*kacaOverlap);
+    const r0tiangFormula = r0.isPintu
+      ? `${r0.openH}−${profW}(kusen atas)−${gapAtas}(atas)−${gapBawah}(bwh)`
+      : `${r0.openH}−2×${profW}(kusen atas+bwh)−${gapAtas}(atas)−${gapBawah}(bwh)`;
+
+    const detailPintu = r0.isPintu ? `
+        <div style="font-family:var(--head);font-size:10px;color:var(--accent);letter-spacing:1px;margin-bottom:4px;">🟡 TIANG — Profil Tiang Daun Pintu</div>
+        <div class="komp-row">
+          <span class="kl">2× Tiang (kiri &amp; kanan)</span>
+          <span class="kv">${r0tiangFormula} = <strong style="color:var(--accent)">${r0.tiangLen}mm</strong> ×2 = ${fmt(r0.tiangLen*2)}mm</span>
+        </div>
+        <div class="komp-row"><span class="kl">Kerf tiang (2 × ${kerf}mm)</span><span class="kv">${fmt(2*kerf)} mm</span></div>
+        <div class="komp-row" style="border-top:1px solid var(--border);padding-top:4px;margin-top:2px;">
+          <span class="kl">Batang tiang per unit</span><span class="kv kt" style="color:var(--accent);">${r0.tiangBarsPerUnit} batang</span>
+        </div>
+        <div style="font-family:var(--head);font-size:10px;color:var(--blue);letter-spacing:1px;margin:10px 0 4px;">🔵 AMBANG — Profil Ambang Daun Pintu (berbeda)</div>
+        <div class="komp-row">
+          <span class="kl">2× Ambang (atas &amp; bawah)</span>
+          <span class="kv">${r0.openW}−2×${profW}(kusen)−${gapKiri}(ki)−${gapKanan}(ka) = <strong style="color:var(--blue)">${r0.ambangLen}mm</strong> ×2 = ${fmt(r0.ambangLen*2)}mm</span>
+        </div>
+        <div class="komp-row"><span class="kl">Kerf ambang (2 × ${kerf}mm)</span><span class="kv">${fmt(2*kerf)} mm</span></div>
+        <div class="komp-row" style="border-top:1px solid var(--border);padding-top:4px;margin-top:2px;">
+          <span class="kl">Batang ambang per unit</span><span class="kv kt" style="color:var(--blue);">${r0.ambangBarsPerUnit} batang</span>
+        </div>` : `
+        <div style="font-family:var(--head);font-size:10px;color:var(--purple);letter-spacing:1px;margin-bottom:4px;">🪟 CASEMENT — Profil Tiang &amp; Ambang Sama</div>
+        <div class="komp-row">
+          <span class="kl">2× Tiang (kiri &amp; kanan)</span>
+          <span class="kv">${r0tiangFormula} = <strong style="color:var(--purple)">${r0.tiangLen}mm</strong> ×2 = ${fmt(r0.tiangLen*2)}mm</span>
+        </div>
+        <div class="komp-row">
+          <span class="kl">2× Ambang (atas &amp; bawah)</span>
+          <span class="kv">${r0.openW}−2×${profW}(kusen)−${gapKiri}(ki)−${gapKanan}(ka) = <strong style="color:var(--purple)">${r0.ambangLen}mm</strong> ×2 = ${fmt(r0.ambangLen*2)}mm</span>
+        </div>
+        <div class="komp-row"><span class="kl">Kerf (4 pot. × ${kerf}mm)</span><span class="kv">${fmt(4*kerf)} mm</span></div>
+        <div class="komp-row" style="border-top:1px solid var(--border);padding-top:4px;margin-top:2px;">
+          <span class="kl">Batang casement per unit</span><span class="kv kt" style="color:var(--purple);">${r0.casementBarsPerUnit} batang</span>
+        </div>`;
+
+    document.getElementById('pintuKompDetail').innerHTML=`
+      <div class="komp-box b">
+        <div class="komp-title">Komponen — 1 unit "${r0.n}" · ${r0.isPintu?'🚪 Daun Pintu':'🪟 Daun Casement'} (opening ${r0.openW}×${r0.openH}mm)</div>
+        <div class="komp-row" style="font-size:10px;color:var(--muted);padding-bottom:6px;">
+          <span>Profil kusen: ${profW}mm · Celah atas: ${gapAtas}mm · Celah bawah: ${gapBawah}mm · Celah kiri: ${gapKiri}mm · Celah kanan: ${gapKanan}mm</span>
+        </div>
+        ${detailPintu}
+        <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+          <div class="komp-row">
+            <span class="kl">1× Kaca (${fmt(kW)}×${fmt(kH)}mm)</span>
+            <span class="kv kt" style="color:var(--green);">${((kW/1000)*(kH/1000)).toFixed(3)} m²</span>
+          </div>
+        </div>
+      </div>
+      ${r0.isPintu
+        ? buildCuttingSketch(r0.tiangPerUnit, BLmm, `Sketsa tiang — 1 unit "${r0.n}"`, 10)
+          + buildCuttingSketch(r0.ambangPerUnit, ambangBLmm, `Sketsa ambang — 1 unit "${r0.n}"`, 10)
+        : buildCuttingSketch(r0.tiangPerUnit, BLmm, `Sketsa casement — 1 unit "${r0.n}"`, 10)
+      }
+      ${pOptiTiang.bars>0    ? buildCuttingSketch(pOptiTiang.binsDetail,    BLmm,       `Cutting Plan — Semua Tiang Pintu (${pOptiTiang.bars} btg · ${pOptiTiang.eff}%)`, 20) : ''}
+      ${pOptiAmbang.bars>0   ? buildCuttingSketch(pOptiAmbang.binsDetail,   ambangBLmm, `Cutting Plan — Semua Ambang Pintu (${pOptiAmbang.bars} btg · ${pOptiAmbang.eff}%)`, 20) : ''}
+      ${pOptiCasement.bars>0 ? buildCuttingSketch(pOptiCasement.binsDetail, BLmm,       `Cutting Plan — Semua Casement (${pOptiCasement.bars} btg · ${pOptiCasement.eff}%)`, 20) : ''}`;
+  }
+
+  // ================================================================
+  // TABLE HARDWARE
+  // ================================================================
+  document.getElementById('secHw').style.display=hRows.length?'block':'none';
+  document.getElementById('tbHw').innerHTML=hRows.map(r=>`
+    <tr><td class="ta">${r.i}</td><td>${r.n}</td>
+    <td class="tp">${r.q} pcs</td><td class="tp">${fmtRp(r.p)}</td>
+    <td class="tg">${fmtRp(r.sub)}</td></tr>`).join('');
+
+  // ================================================================
+  // COST BREAKDOWN
+  // ================================================================
+  const cbLines=[
+    {n:`Profil Kusen — Metode Aman (${kAmanTotal} btg × Rp ${fmt(prBar)})`,v:costKusenAman},
+    {n:`Profil Tiang Daun Pintu (${pTiangAmanTotal} btg × Rp ${fmt(pricePerBarTiang)})`,v:costTiangAman},
+    {n:`Profil Ambang Daun Pintu (${pAmbangAmanTotal} btg × Rp ${fmt(ambangBarPrice)})`,v:costAmbangAman},
+    {n:`Profil Casement Jendela (${pCasementAmanTotal} btg × Rp ${fmt(pricePerBarTiang)})`,v:costCasementAman},
+    {n:`Kaca (${totalKacaArea.toFixed(2)} m² × Rp ${fmt(kacaPrice)})`,v:costKaca},
+    {n:'Hardware & Aksesoris',v:totHwCost},
+    {n:'Material Pelengkap',v:matTmb},
+    {n:`Ongkos Fabrikasi (${totUnits} unit × Rp ${fmt(fabC)})`,v:fab},
+    {n:`Ongkos Pasang (${totUnits} unit × Rp ${fmt(insC)})`,v:ins},
+    {n:'Biaya Pengiriman',v:shipC},
+    {n:'──────────',v:-1},
+    {n:'Subtotal',v:subtotal},
+    {n:`Markup ${(mkPct*100).toFixed(0)}%`,v:markup},
+  ].filter(x=>x.v===-1||x.v>0);
+  document.getElementById('costBreakdown').innerHTML=cbLines.map(l=>
+    l.v===-1?`<div class="cbl"><span class="cbn" style="opacity:.2">${l.n}</span></div>`
+    :`<div class="cbl"><span class="cbn">${l.n}</span><span class="cbv">${fmtRp(l.v)}</span></div>`
+  ).join('');
+
+  document.getElementById('grandTotal').innerHTML=`
+    <div>
+      <div class="gtlb">Total Estimasi Biaya Proyek</div>
+      <div class="gtsb">Berdasarkan Metode Aman · Kusen + Pintu + Kaca + Hardware + Ongkos</div>
+    </div>
+    <div class="gtv">${fmtRp(grand)}</div>`;
+
+  const rp=document.getElementById('resultPanel');
+  rp.classList.add('vis');
+  rp.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>{document.querySelectorAll('.rc').forEach((c,i)=>setTimeout(()=>c.classList.add('go'),i*60));},150);
+}
+
+// ================================================================
+// CUTTING PLAN SKETCH — per-batang dengan segmen berlabel + warna
+// ================================================================
+// pallet warna potongan (tidak merah/hitam agar kontras dengan waste)
+const SEG_COLORS = [
+  '#f5a623','#4a9eff','#3ddc84','#b06aff',
+  '#ff9f43','#00cec9','#fd79a8','#a29bfe',
+  '#55efc4','#fdcb6e','#74b9ff','#e17055',
+];
+
+function buildCuttingSketch(binsDetail, BLmm, title, maxShow=15) {
+  if (!binsDetail || binsDetail.length === 0) return '';
+  const show = Math.min(binsDetail.length, maxShow);
+
+  // Kumpulkan semua label unik → assign warna tetap
+  const labelColorMap = {};
+  let colorIdx = 0;
+  binsDetail.forEach(bin => {
+    bin.pieces.forEach(p => {
+      // group by base label (strip unit number untuk warna konsisten per tipe)
+      const base = p.label.replace(/#\d+/,'').trim();
+      if (!labelColorMap[base]) labelColorMap[base] = SEG_COLORS[colorIdx++ % SEG_COLORS.length];
+    });
+  });
+
+  // Legend
+  const legendEntries = Object.entries(labelColorMap);
+  let legendHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">`;
+  legendEntries.forEach(([lbl, col]) => {
+    legendHTML += `<span style="display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;color:var(--text);">
+      <span style="display:inline-block;width:12px;height:12px;background:${col};flex-shrink:0;"></span>${lbl}
+    </span>`;
+  });
+  legendHTML += `<span style="display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;color:var(--muted);">
+    <span style="display:inline-block;width:12px;height:12px;background:rgba(255,77,77,.18);border:1px solid rgba(255,77,77,.4);flex-shrink:0;"></span>Sisa / Waste
+  </span></div>`;
+
+  let html = `<div style="margin-top:16px;">
+    <div style="font-family:var(--head);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">${title}</div>
+    ${legendHTML}`;
+
+  // ruler header
+  html += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+    <span style="width:52px;flex-shrink:0;"></span>
+    <div style="flex:1;position:relative;height:10px;">
+      <div style="position:absolute;left:0;top:50%;width:100%;height:1px;background:var(--border);"></div>
+      <div style="position:absolute;left:0;top:0;font-family:var(--mono);font-size:9px;color:var(--muted);">0</div>
+      <div style="position:absolute;left:25%;top:0;font-family:var(--mono);font-size:9px;color:var(--muted);">${fmt(BLmm*0.25/1000*1000)}mm</div>
+      <div style="position:absolute;left:50%;top:0;font-family:var(--mono);font-size:9px;color:var(--muted);">${fmt(BLmm*0.5)}mm</div>
+      <div style="position:absolute;left:75%;top:0;font-family:var(--mono);font-size:9px;color:var(--muted);">${fmt(BLmm*0.75)}mm</div>
+      <div style="position:absolute;right:0;top:0;font-family:var(--mono);font-size:9px;color:var(--muted);">${fmt(BLmm)}mm</div>
+    </div>
+    <span style="width:42px;flex-shrink:0;"></span>
+  </div>`;
+
+  for (let b=0; b<show; b++) {
+    const bin = binsDetail[b];
+    const sisaMm = bin.sisa;
+    const usedMm = BLmm - sisaMm;
+    const pctUsed = (usedMm/BLmm*100).toFixed(1);
+
+    // Build segments HTML
+    let segsHTML = '';
+    let cursor = 0; // track position in bar
+
+    // pieces are stored in fit order; draw them left-to-right
+    bin.pieces.forEach((p, pi) => {
+      const totalWithKerf = p.len + (p.kerf||0);
+      const pctPiece = (p.len / BLmm * 100).toFixed(2);
+      const pctKerfSeg = ((p.kerf||0) / BLmm * 100).toFixed(2);
+      const base = p.label.replace(/#\d+/,'').trim();
+      const col = labelColorMap[base] || SEG_COLORS[0];
+
+      // potongan segment
+      segsHTML += `<div style="
+        width:${pctPiece}%;height:100%;background:${col};
+        border-right:${p.kerf>0?'2px solid rgba(0,0,0,0.4)':'none'};
+        display:flex;align-items:center;justify-content:center;
+        overflow:hidden;position:relative;flex-shrink:0;
+        " title="${p.label}: ${fmt(p.len)}mm">
+        <span style="font-family:var(--mono);font-size:9px;color:rgba(0,0,0,0.75);white-space:nowrap;padding:0 2px;font-weight:600;">
+          ${pctPiece>6 ? p.len+'mm' : (pctPiece>3 ? '▐' : '')}
+        </span>
+      </div>`;
+      // kerf marker
+      if (p.kerf > 0 && pctKerfSeg > 0.1) {
+        segsHTML += `<div style="width:${pctKerfSeg}%;height:100%;background:rgba(0,0,0,0.5);flex-shrink:0;" title="Kerf ${p.kerf}mm"></div>`;
+      }
+      cursor += totalWithKerf;
+    });
+
+    // sisa / waste segment
+    if (sisaMm > 0) {
+      const pctSisa = (sisaMm/BLmm*100).toFixed(2);
+      segsHTML += `<div style="
+        flex:1;height:100%;min-width:${pctSisa}%;
+        background:rgba(255,77,77,.15);
+        border-left:2px dashed rgba(255,77,77,.5);
+        display:flex;align-items:center;justify-content:center;
+        overflow:hidden;
+        " title="Sisa: ${fmt(sisaMm)}mm">
+        <span style="font-family:var(--mono);font-size:9px;color:rgba(255,77,77,.8);">
+          ${pctSisa>5 ? '↤ sisa '+fmt(sisaMm)+'mm' : (pctSisa>2?'sisa':'')}
+        </span>
+      </div>`;
+    }
+
+    html += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <span style="width:52px;flex-shrink:0;font-family:var(--mono);font-size:10px;color:var(--muted);text-align:right;">Btg ${b+1}</span>
+      <div style="flex:1;height:22px;display:flex;border:1px solid var(--border);overflow:hidden;position:relative;">
+        ${segsHTML}
+      </div>
+      <span style="width:42px;flex-shrink:0;font-family:var(--mono);font-size:9px;color:var(--muted);text-align:right;">${pctUsed}%</span>
+    </div>`;
+  }
+
+  if (binsDetail.length > show) {
+    html += `<div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:4px;padding-left:58px;">
+      ... dan ${binsDetail.length - show} batang lainnya dengan pola serupa
+    </div>`;
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ================================================================
+// RESET
+// ================================================================
+function resetAll(){
+  if(!confirm('Reset semua data?'))return;
+  items=[];hwItems=[];iId=0;hId=0;
+  renderItems();renderHw();
+  document.getElementById('resultPanel').classList.remove('vis');
+  document.getElementById('projectName').value='';
+  document.getElementById('notes').value='';
+}
+
+// ================================================================
+// INIT
+// ================================================================
+document.getElementById('profileType').addEventListener('change',updateProfileInfo);
+document.getElementById('barLength').addEventListener('change',updateProfileInfo);
+const td=new Date();
+document.getElementById('projectDate').value=
+  `${String(td.getDate()).padStart(2,'0')}/${String(td.getMonth()+1).padStart(2,'0')}/${td.getFullYear()}`;
+updateProfileInfo();
+
+// Default data
+addItem('pintu_single', 'Pintu Utama',     900, 2100, 2, true);
+addItem('pintu_single', 'Pintu Kamar',     800, 2000, 3, true);
+addItem('jendela',      'Jendela Kamar',   700,  900, 4, false);
+addItem('jendela_sliding','Jendela Sliding',1200,1000, 2, false);
+addHardware('Engsel Kupu-kupu',6,35000);
+addHardware('Kunci Tanam',3,120000);
+addHardware('Handle Pintu',3,85000);
+
+</script>
+</body>
+</html>
